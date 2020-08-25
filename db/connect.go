@@ -4,16 +4,26 @@ package db
 import (
 	"context"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var uri string = "mongodb://localhost:27017"
+type mongoInstance struct {
+	Client *mongo.Client
+	Db     *mongo.Database
+}
+
+// MgIns type will hold the client and bd
+var MgIns mongoInstance
 
 // Connect to the mongo db with mongo go client.
 func Connect() {
+	uri := os.Getenv("DB_URI")
+	dbName := os.Getenv("DB_NAME")
+
 	ctx := context.Background()
 	clientOptions := options.Client().ApplyURI(uri)
 
@@ -28,8 +38,10 @@ func Connect() {
 
 	log.Println("Database connected")
 
-	db := client.Database("resume")
+	db := client.Database(dbName)
 
-	db.Collection("user")
-
+	MgIns = mongoInstance{
+		Client: client,
+		Db:     db,
+	}
 }
