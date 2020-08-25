@@ -2,6 +2,7 @@
 package main
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"resume/db"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
+	"github.com/gofiber/session"
 	"github.com/gofiber/template/html"
 	"github.com/joho/godotenv"
 	"github.com/markbates/goth"
@@ -33,6 +35,13 @@ func main() {
 		google.New(os.Getenv("GOOGLE_KEY"), os.Getenv("GOOGLE_SECRET"), "http://localhost:8080/auth/google/callback", "email"),
 	)
 
+	// create session handler
+	sessions := session.New()
+
+	goth_fiber.Session = sessions
+
+	log.Println(sessions)
+
 	app.Get("/auth/:provider", goth_fiber.BeginAuthHandler)
 	app.Get("/auth/:provider/callback", func(ctx *fiber.Ctx) {
 		user, err := goth_fiber.CompleteUserAuth(ctx)
@@ -40,7 +49,9 @@ func main() {
 			log.Fatal(err)
 		}
 
-		ctx.Send(user)
+		json, _ := json.Marshal(user)
+
+		ctx.Send(json)
 
 	})
 
