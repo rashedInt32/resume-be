@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	cloud.google.com/go v0.64.0 // indirect
+	github.com/gofiber/cors v0.2.2
 	github.com/gofiber/fiber v1.14.2
 	github.com/gofiber/session v1.1.0
 	github.com/gofiber/template v1.5.5

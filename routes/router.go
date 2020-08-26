@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controller "resume/controllers"
+	"resume/controller"
 
 	"github.com/gofiber/fiber"
 )
@@ -11,9 +11,6 @@ func Setup(app *fiber.App) {
 	api := app.Group("/api/v1")
 
 	user := api.Group("/user")
-	user.Get("/check", func(c *fiber.Ctx) {
-		c.Send("Working as expected")
-	})
-
-	user.Get("/auth/google/callback", controller.UserAuthentication)
+	user.Get("/auth", controller.UserAuth)
+	user.Post("/signup", controller.UserSignup)
 }
