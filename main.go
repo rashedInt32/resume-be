@@ -22,7 +22,7 @@ func main() {
 
 	app.Use(cors.New())
 
-	app.Use(middleware.Logger("${method} ${path} ${latecy}"))
+	app.Use(middleware.Logger("${time} ${method} ${path} - ${ip} - ${status} - ${latency}\n"))
 
 	routes.Setup(app)
 
