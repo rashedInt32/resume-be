@@ -20,5 +20,5 @@ func Setup(app *fiber.App) {
 	app.Use(jwtware.New(jwtware.Config{
 		SigningKey: []byte(os.Getenv("JWT_SECRET")),
 	}))
-	user.Post("/checktoken", middleware.Protected(), controller.UserCheck)
+	user.Post("/resume", middleware.Protected(), controller.UserResume)
 }

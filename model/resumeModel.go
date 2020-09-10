@@ -62,8 +62,7 @@ type link struct {
 	LineHeight int    `json:"lineHeight" bson:"lineHeight"`
 }
 
-// Style model for resume
-type Style struct {
+type style struct {
 	Body      body      `json:"body" bosn:"body"`
 	Display   display   `json:"display" bosn:"display"`
 	Name      name      `json:"name" bosn:"name"`
@@ -74,4 +73,52 @@ type Style struct {
 	TextMuted textMuted `json:"textMuted" bosn:"textMuted"`
 	SubTitle  subTitle  `json:"subTitle" bosn:"subTitle"`
 	Link      link      `json:"link" bosn:"link"`
+}
+
+type educationStruct struct {
+	University string `json:"university" bson:"university"`
+	Year       string `json:"year" bson:"year"`
+	Degree     string `json:"degree" bson:"degree"`
+}
+
+type expStruct struct {
+	Role    string `json:"role" bson:"role"`
+	Company string `json:"company" bson:"company"`
+	Year    string `json:"year" bson:"year"`
+	Desc    string `json:"desc" bson:"desc"`
+}
+
+type socialStruct struct {
+	Name string `json:"name" bson:"name"`
+	URL  string `json:"url" bson:"url"`
+}
+
+type projectStruct struct {
+	URL string `json:"url" bson:"url"`
+}
+
+type skillStruct struct {
+	Name  string `json:"name" bson:"name"`
+	Range int    `json:"range" bson:"range"`
+}
+
+type contact struct {
+	Phone   string `json:"phone" bson:"phone"`
+	Email   string `json:"string" bson:"string"`
+	Address string `json:"address" bson:"address"`
+}
+
+// Resume model data to save resume by user
+type Resume struct {
+	Style      style                       `json:"style" bson:"style"`
+	Name       string                      `json:"name" bson:"name"`
+	Role       string                      `json:"role" bson:"role"`
+	Photo      string                      `json:"photo" bson:"photo"`
+	Overview   string                      `json:"overview" bson:"overview"`
+	Education  []struct{ educationStruct } `json:"education" bson:"education"`
+	Experience []struct{ expStruct }       `json:"experience" bson:"experience"`
+	Socials    []struct{ socialStruct }    `json:"socials" bson:"socials"`
+	Projects   []struct{ projectStruct }   `json:"projects" bson:"projects"`
+	Skills     []struct{ skillStruct }     `json:"skills" bson:"skills"`
+	Contact    contact                     `json:"contact" bson:"contact"`
 }

@@ -90,12 +90,12 @@ func UserSignup(c *fiber.Ctx) {
 	})
 }
 
-// UserCheck  check token avilability.
-func UserCheck(c *fiber.Ctx) {
+// UserResume  check token avilability.
+func UserResume(c *fiber.Ctx) {
 	collection = db.MgIns.Db.Collection("user")
 	ctx := context.Background()
 
-	var resumedata model.Style
+	var resumedata model.Resume
 	if err := c.BodyParser(&resumedata); err != nil {
 		log.Fatal(err)
 	}

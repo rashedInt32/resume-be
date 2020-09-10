@@ -14,7 +14,7 @@ type User struct {
 	Profession string             `json:"profession,omitempty" bson:"profession,omitempty"`
 	DOB        string             `json:"dob,omitempty" bson:"dob,omitempty"`
 	Password   string             `json:"password,omitempty" bson:"password,omitempty"`
-	Resume     Style              `json:"resume,omitempty" bson:"resume,omitempty"`
+	Resume     Resume             `json:"resume,omitempty" bson:"resume,omitempty"`
 }
 
 // Auth model
@@ -22,12 +22,3 @@ type Auth struct {
 	Email    string `json:"email,omitempty" bson:"email,omitempty"`
 	Password string `json:"password,omitempty" bson:"password,omitempty"`
 }
-
-// type Resume struct {
-//     Style struct {
-//         Body struct {
-//             Name string`json:`
-//         } `json:"body, omitempty" bson:"body", omitempty`
-
-//     } `json:"style, omitempty" bson:"style", omitempty`
-// }
