@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-const port int = 8080
+const port int = 3001
 
 func main() {
 	godotenv.Load(".env")

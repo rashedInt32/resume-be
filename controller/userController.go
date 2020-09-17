@@ -8,7 +8,6 @@ import (
 	"resume/model"
 	"resume/utils"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,8 +15,8 @@ import (
 
 var collection *mongo.Collection
 
-// UserAuth google 0auth.
-func UserAuth(c *fiber.Ctx) {
+// Auth : Post login.
+func Auth(c *fiber.Ctx) {
 	collection = db.MgIns.Db.Collection("user")
 	ctx := context.Background()
 
@@ -52,8 +51,8 @@ func UserAuth(c *fiber.Ctx) {
 	})
 }
 
-// UserSignup sign up user.
-func UserSignup(c *fiber.Ctx) {
+// Signup : post registration user.
+func Signup(c *fiber.Ctx) {
 	collection = db.MgIns.Db.Collection("user")
 	ctx := context.Background()
 	var user model.User
@@ -90,8 +89,8 @@ func UserSignup(c *fiber.Ctx) {
 	})
 }
 
-// UserResume  check token avilability.
-func UserResume(c *fiber.Ctx) {
+// Resume : Post resume to associate users
+func Resume(c *fiber.Ctx) {
 	collection = db.MgIns.Db.Collection("user")
 	ctx := context.Background()
 
@@ -100,9 +99,7 @@ func UserResume(c *fiber.Ctx) {
 		log.Fatal(err)
 	}
 
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	email := claims["email"].(string)
+	email := utils.ValidateToken(c)
 
 	var result model.User
 	err := collection.FindOneAndUpdate(ctx, bson.M{
