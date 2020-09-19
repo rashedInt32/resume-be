@@ -15,4 +15,5 @@ func Setup(app *fiber.App) {
 	user.Post("/auth", controller.Auth)
 	user.Post("/signup", controller.Signup)
 	user.Post("/resume", middleware.Protected(), controller.Resume)
+	user.Get("/me", middleware.Protected(), controller.Me)
 }

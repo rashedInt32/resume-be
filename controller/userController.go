@@ -119,5 +119,26 @@ func Resume(c *fiber.Ctx) {
 	c.Status(200).JSON(fiber.Map{
 		"data": result,
 	})
+}
 
+// Me get current user data.
+func Me(c *fiber.Ctx) {
+	collection = db.MgIns.Db.Collection("user")
+	ctx := context.Background()
+
+	email := utils.ValidateToken(c)
+
+	var result model.User
+
+	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&result)
+
+	if err != nil {
+		c.Status(404).JSON(fiber.Map{
+			"data": "Something went wrong",
+		})
+		return
+	}
+
+	result.Password = "ha ha ha ho ho ha ha"
+	c.Status(200).JSON(result)
 }
