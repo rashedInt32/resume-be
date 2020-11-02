@@ -14,7 +14,7 @@ type User struct {
 	Profession string             `json:"profession,omitempty" bson:"profession,omitempty"`
 	DOB        string             `json:"dob,omitempty" bson:"dob,omitempty"`
 	Password   string             `json:"password,omitempty" bson:"password,omitempty"`
-	Resume     Resume             `json:"resume,omitempty" bson:"resume,omitempty"`
+	Resume     primitive.ObjectID `json:"resume,omitempty" bson:"resume,omitempty"`
 }
 
 // Auth model

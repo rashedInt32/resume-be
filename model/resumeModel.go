@@ -1,6 +1,8 @@
 // Package model provides data structure
 package model
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 type body struct {
 	Background string `json:"background" bson:"background"`
 }
@@ -39,7 +41,6 @@ type title struct {
 }
 
 type text struct {
-	Fontsize   int    `json:"fontSize" bson:"fontSize"`
 	LineHeight string `json:"lineHeight" bson:"lineHeight"`
 	Color      string `json:"color" bson:"color"`
 	Display    string `json:"display" bson:"display"`
@@ -102,23 +103,25 @@ type skillStruct struct {
 	Range int    `json:"range" bson:"range"`
 }
 
-type contact struct {
+type contacts struct {
 	Phone   string `json:"phone" bson:"phone"`
-	Email   string `json:"string" bson:"string"`
+	Email   string `json:"email" bson:"email"`
 	Address string `json:"address" bson:"address"`
 }
 
 // Resume model data to save resume by user
 type Resume struct {
-	Style      style                       `json:"style" bson:"style"`
-	Name       string                      `json:"name" bson:"name"`
-	Role       string                      `json:"role" bson:"role"`
-	Photo      string                      `json:"photo" bson:"photo"`
-	Overview   string                      `json:"overview" bson:"overview"`
-	Education  []struct{ educationStruct } `json:"education" bson:"education"`
-	Experience []struct{ expStruct }       `json:"experience" bson:"experience"`
-	Socials    []struct{ socialStruct }    `json:"socials" bson:"socials"`
-	Projects   []struct{ projectStruct }   `json:"projects" bson:"projects"`
-	Skills     []struct{ skillStruct }     `json:"skills" bson:"skills"`
-	Contact    contact                     `json:"contact" bson:"contact"`
+	ID         primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Key        string             `json:"key" bson:"key"`
+	Style      style              `json:"style" bson:"style"`
+	Name       string             `json:"name" bson:"name"`
+	Role       string             `json:"role" bson:"role"`
+	Photo      string             `json:"photo" bson:"photo"`
+	Overview   string             `json:"overview" bson:"overview"`
+	Education  []educationStruct  `json:"education" bson:"education"`
+	Experience []expStruct        `json:"experience" bson:"experience"`
+	Socials    []socialStruct     `json:"socials" bson:"socials"`
+	Projects   []projectStruct    `json:"projects" bson:"projects"`
+	Skills     []skillStruct      `json:"skills" bson:"skills"`
+	Contact    contacts           `json:"contacts" bson:"contacts"`
 }
