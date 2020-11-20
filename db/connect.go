@@ -13,7 +13,7 @@ import (
 
 type mongoInstance struct {
 	Client *mongo.Client
-	Db     *mongo.Database
+	DB     *mongo.Database
 }
 
 // MgIns type will hold the client and bd
@@ -42,6 +42,6 @@ func Connect() {
 
 	MgIns = mongoInstance{
 		Client: client,
-		Db:     db,
+		DB:     db,
 	}
 }

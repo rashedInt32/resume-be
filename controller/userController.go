@@ -13,11 +13,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var collection *mongo.Collection
+var userCollection *mongo.Collection
+
+// GetUserCollection .
+func GetUserCollection() *mongo.Collection {
+	return db.MgIns.DB.Collection("user")
+}
 
 // Auth : Post login.
 func Auth(c *fiber.Ctx) {
-	collection = db.MgIns.Db.Collection("user")
+	userCollection = GetUserCollection()
 	ctx := context.Background()
 
 	var user model.Auth
@@ -26,7 +31,7 @@ func Auth(c *fiber.Ctx) {
 	}
 
 	var result model.User
-	err := collection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&result)
+	err := userCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&result)
 	if err != nil {
 		c.Status(404).JSON(fiber.Map{
 			"status": "error",
@@ -53,7 +58,7 @@ func Auth(c *fiber.Ctx) {
 
 // Signup : post registration user.
 func Signup(c *fiber.Ctx) {
-	collection = db.MgIns.Db.Collection("user")
+	userCollection = GetUserCollection()
 	ctx := context.Background()
 	var user model.User
 	if err := c.BodyParser(&user); err != nil {
@@ -67,7 +72,7 @@ func Signup(c *fiber.Ctx) {
 		},
 	}
 
-	count, _ := collection.CountDocuments(ctx, filter)
+	count, _ := userCollection.CountDocuments(ctx, filter)
 
 	if count >= 1 {
 		c.Status(404).JSON(fiber.Map{
@@ -79,7 +84,7 @@ func Signup(c *fiber.Ctx) {
 
 	pass, _ := utils.HashPassword(user.Password)
 	user.Password = pass
-	collection.InsertOne(ctx, user)
+	userCollection.InsertOne(ctx, user)
 
 	token, _ := utils.GenerateToken(user.Email)
 
@@ -89,68 +94,26 @@ func Signup(c *fiber.Ctx) {
 	})
 }
 
-// Resume : Post resume to associate users
-func Resume(c *fiber.Ctx) {
-	resumecollection := db.MgIns.Db.Collection("resume")
-	collection = db.MgIns.Db.Collection("user")
-	ctx := context.Background()
-
-	var resumedata model.Resume
-	if err := c.BodyParser(&resumedata); err != nil {
-		log.Fatal(err)
-	}
-
-	resume, err := resumecollection.InsertOne(ctx, resumedata)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	email := utils.ValidateToken(c)
-
-	result := collection.FindOneAndUpdate(ctx, bson.M{
-		"email": email,
-	},
-		bson.M{
-			"$set": bson.M{"resume": resume.InsertedID},
-		})
-
-	if result.Err() != nil {
-		log.Panicln(result.Err())
-	}
-
-	c.Status(200).JSON(fiber.Map{
-		"status": "success",
-		"msg":    "Resume successfully added",
-	})
-}
-
 // Me : Get current user data.
 func Me(c *fiber.Ctx) {
-	collection = db.MgIns.Db.Collection("user")
-	resumeCollection := db.MgIns.Db.Collection("resume")
+	userCollection = GetUserCollection()
 	ctx := context.Background()
 
 	email := utils.ValidateToken(c)
 
 	var result model.User
 
-	err := collection.FindOne(ctx, bson.M{"email": email}).Decode(&result)
-
-	var resume model.Resume
-
-	resumeCollection.FindOne(ctx, bson.M{"_id": result.Resume}).Decode(&resume)
+	err := userCollection.FindOne(ctx, bson.M{"email": email}).Decode(&result)
 
 	if err != nil {
 		c.Status(404).JSON(fiber.Map{
-			"data":   "Something went wrong",
-			"resume": resume,
+			"data": "Something went wrong",
 		})
 		return
 	}
 
 	result.Password = "ha ha ha ho ho ha ha"
 	c.Status(200).JSON(fiber.Map{
-		"user":   result,
-		"resume": resume,
+		"user": result,
 	})
 }
