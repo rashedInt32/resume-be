@@ -4,7 +4,7 @@ import (
 	"resume/controller"
 	"resume/middleware"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 )
 
 // Setup .

@@ -5,13 +5,13 @@ import (
 	"resume/db"
 	"resume/routes"
 
-	"github.com/gofiber/cors"
-	"github.com/gofiber/fiber"
-	"github.com/gofiber/fiber/middleware"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 )
 
-const port int = 3001
+const port string = ":3001"
 
 func main() {
 	godotenv.Load(".env")
@@ -22,7 +22,7 @@ func main() {
 
 	app.Use(cors.New())
 
-	app.Use(middleware.Logger("${time} ${method} ${path} - ${ip} - ${status} - ${latency}\n"))
+	app.Use(logger.New())
 
 	routes.Setup(app)
 

@@ -7,8 +7,9 @@ import (
 	"resume/model"
 	"resume/utils"
 
-	"github.com/gofiber/fiber"
+	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,27 +21,25 @@ func getResumeCollection() *mongo.Collection {
 }
 
 // GetResume to get specific resume.
-func GetResume(c *fiber.Ctx) {
+func GetResume(c *fiber.Ctx) error {
 	resumeCollection := getResumeCollection()
 	ctx := context.Background()
 
-	var id string
-	if err := c.BodyParser(&id); err != nil {
-		log.Fatal(err)
-	}
+	id := c.Params("id")
+	resumeID, err := primitive.ObjectIDFromHex(id)
 
 	var resume model.Resume
-	err := resumeCollection.FindOne(ctx, bson.M{"_id": id}).Decode(&resume)
+	err = resumeCollection.FindOne(ctx, bson.M{"_id": resumeID}).Decode(&resume)
 
 	if err != nil {
-		log.Fatal(err)
+		return c.Status(404).JSON(fiber.Map{"error": err})
 	}
 
-	c.Status(200).JSON(fiber.Map{"resume": resume})
+	return c.Status(200).JSON(fiber.Map{"resume": resume})
 }
 
 // Resume : Post resume to associate users
-func Resume(c *fiber.Ctx) {
+func Resume(c *fiber.Ctx) error {
 	resumeCollection := getResumeCollection()
 	userCollection := GetUserCollection()
 	ctx := context.Background()
@@ -68,7 +67,7 @@ func Resume(c *fiber.Ctx) {
 		log.Panicln(result.Err())
 	}
 
-	c.Status(200).JSON(fiber.Map{
+	return c.Status(200).JSON(fiber.Map{
 		"status": "success",
 		"msg":    "Resume successfully added",
 	})
